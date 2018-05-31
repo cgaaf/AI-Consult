@@ -11,12 +11,14 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     const agentBot = new dialogflow_fulfillment_1.WebhookClient({ request, response });
     //   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
     //   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+    // Centor Criteria Intent
     function calculateCentorCriteria(agent) {
         const { parameters } = request.body.queryResult;
         const { age, tonsilarExudate, cervicalLymph, fever, cough } = parameters;
         console.log('Test Function parameters: ' + JSON.stringify(parameters));
         agent.add(decision_instruments_1.centorCalc(age, tonsilarExudate, cervicalLymph, fever, cough));
     }
+    // Calculate Heart Score Intent
     function calculateHeartScore(agent) {
         const { parameters } = request.body.queryResult;
         const { suspicion, ekg, age, numRiskFactors, historyOfCAD, troponin } = parameters;
@@ -28,5 +30,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     intentMap.set('Centor Criteria - yes', calculateCentorCriteria);
     intentMap.set('Calculate Heart Score', calculateHeartScore);
     agentBot.handleRequest(intentMap);
+});
+exports.diseaseQuery = functions.https.onRequest((req, res) => {
+    console.log(JSON.stringify(req));
 });
 //# sourceMappingURL=index.js.map

@@ -12,6 +12,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "dialogflow-fulfillment": "^0.3.0-beta.2",
+    "firebase": "^5.0.4",
     "firebase-admin": "~5.12.1",
     "firebase-functions": "^1.0.3"
   },
