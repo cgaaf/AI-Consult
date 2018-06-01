@@ -49,7 +49,8 @@ export function centorCalc(
     }
 
     switch(score) {
-        case 0 || -1: return outputString[0];
+        case -1: return outputString[0];
+        case 0: return outputString[0];
         case 1: return outputString[1];
         case 2: return outputString[2];
         case 3: return outputString[3];

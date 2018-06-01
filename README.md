@@ -23,3 +23,5 @@ This will include pictures and a logic based guide that ultimately helps provide
 ## Clinical Decision Tools and Calculator
 The clinical decision guide will help providers find appropriate evidence base clinical decision instrument and help the provider calculate and interpret any associated scoring.
 
+## Journal Club
+At the point the vision primarily relates to providing a recent relavent high impact journals. Possibly directly embed high quality podcast reviews of articles. 

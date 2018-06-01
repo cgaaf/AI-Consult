@@ -28,10 +28,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     // Run the proper function handler based on the matched Dialogflow intent name
     const intentMap = new Map();
     intentMap.set('Centor Criteria - yes', calculateCentorCriteria);
-    intentMap.set('Calculate Heart Score', calculateHeartScore);
+    intentMap.set('Decision Instrument: HEART Score', calculateHeartScore);
     agentBot.handleRequest(intentMap);
-});
-exports.diseaseQuery = functions.https.onRequest((req, res) => {
-    console.log(JSON.stringify(req));
 });
 //# sourceMappingURL=index.js.map
