@@ -1,7 +1,10 @@
 import * as functions from 'firebase-functions';
 
 import { WebhookClient } from 'dialogflow-fulfillment';
+import { Table }from 'actions-on-google';
+
 import { centorCalc, heartCalc } from './decision_instruments';
+import { toKg, lidocaineDosing, bupivacaineDosing, ropivacaineDosing } from './helpers';
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
@@ -10,8 +13,8 @@ process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 // 
 export const dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agentBot = new WebhookClient({ request, response });
-    //   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
-    //   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+      console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
+      console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
     
     // Centor Criteria Intent
         function calculateCentorCriteria(agent) {
@@ -30,11 +33,60 @@ export const dialogflowFirebaseFulfillment = functions.https.onRequest((request,
             agent.add(heartCalc(suspicion, ekg, age, numRiskFactors, historyOfCAD, troponin));
         }
 
+    // Calculate local anesthetic dosing
+        function calculateLocalAnestheticDose(agent) {
+            const { parameters } = request.body.queryResult;
+            const { unitWeight, localAnesthetic } = parameters;
+            const { amount, unit } = unitWeight;
+            const actualWeight = toKg(unitWeight)
+
+            console.log(`amount: ${amount}, unit: ${unit}, actualWeight: ${actualWeight}, localAnesthetic: ${localAnesthetic}`);
+
+            const conv = agent.conv();
+
+            let tableRows: string[][];
+
+            switch (localAnesthetic) {
+                case 'lidocaine': {
+                    conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${lidocaineDosing(actualWeight)[1]}mg (4mg/kg) without addition of epinephrine and ${lidocaineDosing(actualWeight)[2]}mg (7mg/kg) if epinephrine is added.`);
+                    tableRows = lidocaineDosing(actualWeight)[0];
+                    break;
+                }
+
+                case 'bupivacaine': {
+                    conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${(actualWeight*2).toFixed(1)}mg (2mg/kg) without addition of epinephrine and ${actualWeight*3}mg (3mg/kg) if epinephrine is added.`);
+                    tableRows = bupivacaineDosing(actualWeight)[0];
+                    break;
+                }
+
+                case 'ropivacaine': {
+                    conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${(actualWeight*3).toFixed(1)}mg (3mg/kg)`);
+                    tableRows = ropivacaineDosing(actualWeight)[0];
+                    break;
+                }
+
+                default: {
+                    conv.ask(`Sorry, I don't have information for that drug yet. I'm working hard to keep adding new information to my brain`);
+                }
+            }
+
+            conv.ask(new Table({
+                title: `${localAnesthetic} dosing`,
+                columns: ['formulation', 'max volume'],
+                rows: tableRows,
+                dividers: true
+            }));
+
+            agent.add(conv);
+        }
+
 
 
   // Run the proper function handler based on the matched Dialogflow intent name
   const intentMap = new Map();
   intentMap.set('Centor Criteria - yes', calculateCentorCriteria);
   intentMap.set('Decision Instrument: HEART Score', calculateHeartScore);
+  intentMap.set('CALC Anesthetic Dose', calculateLocalAnestheticDose);
+  
   agentBot.handleRequest(intentMap);
 });
