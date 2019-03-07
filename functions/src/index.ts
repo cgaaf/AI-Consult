@@ -48,19 +48,19 @@ export const dialogflowFirebaseFulfillment = functions.https.onRequest((request,
 
             switch (localAnesthetic) {
                 case 'lidocaine': {
-                    conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${lidocaineDosing(actualWeight)[1]}mg (4mg/kg) without addition of epinephrine and ${lidocaineDosing(actualWeight)[2]}mg (7mg/kg) if epinephrine is added.`);
+                    conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${lidocaineDosing(actualWeight)[1]}mg (4mg/kg; max 300mg) without addition of epinephrine and ${lidocaineDosing(actualWeight)[2]}mg (7mg/kg; max 500mg) if epinephrine is added.`);
                     tableRows = lidocaineDosing(actualWeight)[0];
                     break;
                 }
 
                 case 'bupivacaine': {
-                    conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${(actualWeight*2).toFixed(1)}mg (2mg/kg) without addition of epinephrine and ${actualWeight*3}mg (3mg/kg) if epinephrine is added.`);
+                    conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${bupivacaineDosing(actualWeight)[1]}mg (2mg/kg; max 175mg) without addition of epinephrine and ${bupivacaineDosing(actualWeight)[2]}mg (3mg/kg; max 225mg) if epinephrine is added.`);
                     tableRows = bupivacaineDosing(actualWeight)[0];
                     break;
                 }
 
                 case 'ropivacaine': {
-                    conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${(actualWeight*3).toFixed(1)}mg (3mg/kg)`);
+                    conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${ropivacaineDosing(actualWeight)[1]}mg (3mg/kg; max 225mg)`);
                     tableRows = ropivacaineDosing(actualWeight)[0];
                     break;
                 }
@@ -71,7 +71,7 @@ export const dialogflowFirebaseFulfillment = functions.https.onRequest((request,
             }
 
             conv.ask(new Table({
-                title: `${localAnesthetic} dosing`,
+                title: `${localAnesthetic[0].toUpperCase() + localAnesthetic.substring(1)} dosing`,
                 columns: ['formulation', 'max volume'],
                 rows: tableRows,
                 dividers: true

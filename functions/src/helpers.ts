@@ -16,10 +16,10 @@ export function lidocaineDosing(weight): any[] {
         ['1%', (noEpi / 10).toFixed(1) + ' mL'],
         ['1.5%', (noEpi / 15).toFixed(1) + ' mL'],
         ['2%', (noEpi / 20).toFixed(1) + ' mL'],
-        ['0.5% + epi', (addEpi / 5).toFixed(1) + ' mL'],
-        ['1% + epi', (addEpi / 10).toFixed(1) + ' mL'],
-        ['1.5% + epi', (addEpi / 15).toFixed(1) + ' mL'],
-        ['2% + epi', (addEpi / 20).toFixed(1) + ' mL']
+        ['0.5% + epinephrine', (addEpi / 5).toFixed(1) + ' mL'],
+        ['1% + epinephrine', (addEpi / 10).toFixed(1) + ' mL'],
+        ['1.5% + epinephrine', (addEpi / 15).toFixed(1) + ' mL'],
+        ['2% + epinephrine', (addEpi / 20).toFixed(1) + ' mL']
     ];
 
     return [table, noEpi.toFixed(0), addEpi.toFixed(0)];
@@ -35,8 +35,8 @@ export function bupivacaineDosing(weight): any[] {
     const table: string[][] = [
         ['0.25%', (noEpi / 2.5).toFixed(1) + ' mL'],
         ['0.5%', (noEpi / 5).toFixed(1) + ' mL'],
-        ['0.25% + epi', (addEpi / 2.5).toFixed(1) + ' mL'],
-        ['0.5% + epi', (addEpi / 0.5).toFixed(1) + ' mL']
+        ['0.25% + epinephrine', (addEpi / 2.5).toFixed(1) + ' mL'],
+        ['0.5% + epinephrine', (addEpi / 0.5).toFixed(1) + ' mL']
     ];
 
     return [table, noEpi.toFixed(0), addEpi.toFixed(0)];
