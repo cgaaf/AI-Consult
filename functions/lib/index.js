@@ -68,7 +68,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     const intentMap = new Map();
     intentMap.set('Centor Criteria - yes', calculateCentorCriteria);
     intentMap.set('Decision Instrument: HEART Score', calculateHeartScore);
-    intentMap.set('CALC Anesthetic Dose', calculateLocalAnestheticDose);
+    intentMap.set('Drug Reference: Local Anesthetic Dose', calculateLocalAnestheticDose);
     agentBot.handleRequest(intentMap);
 });
 //# sourceMappingURL=index.js.map
