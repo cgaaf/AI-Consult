@@ -1,92 +1,103 @@
 import * as functions from 'firebase-functions';
+import { dialogflow, Table } from 'actions-on-google';
+import { 
+    toKg, 
+    ageToBroselowColor, 
+    ageToKg,
+    lidocaineDosing, 
+    bupivacaineDosing,
+    ropivacaineDosing } from './helpers';
 
-import { WebhookClient } from 'dialogflow-fulfillment';
-import { Table }from 'actions-on-google';
-
-import { centorCalc, heartCalc } from './decision_instruments';
-import { toKg, lidocaineDosing, bupivacaineDosing, ropivacaineDosing } from './helpers';
-
-process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
-
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-// 
-export const dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
-  const agentBot = new WebhookClient({ request, response });
-      console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
-      console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
-    
-    // Centor Criteria Intent
-        function calculateCentorCriteria(agent) {
-            const { parameters } = request.body.queryResult;
-            const { age, tonsilarExudate, cervicalLymph, fever, cough } = parameters;
-            console.log('Test Function parameters: ' + JSON.stringify(parameters));
-            
-            agent.add(centorCalc(age, tonsilarExudate, cervicalLymph, fever, cough));
-        }
-    // Calculate Heart Score Intent
-        function calculateHeartScore(agent) {
-            const { parameters } = request.body.queryResult;
-            const { suspicion, ekg, age, numRiskFactors, historyOfCAD, troponin } = parameters;
-            console.log('Test Function parameters: ' + JSON.stringify(parameters));
-            
-            agent.add(heartCalc(suspicion, ekg, age, numRiskFactors, historyOfCAD, troponin));
-        }
-
-    // Calculate local anesthetic dosing
-        function calculateLocalAnestheticDose(agent) {
-            const { parameters } = request.body.queryResult;
-            const { unitWeight, localAnesthetic } = parameters;
-            const { amount, unit } = unitWeight;
-            const actualWeight = toKg(unitWeight)
-
-            console.log(`amount: ${amount}, unit: ${unit}, actualWeight: ${actualWeight}, localAnesthetic: ${localAnesthetic}`);
-
-            const conv = agent.conv();
-
-            let tableRows: string[][];
-
-            switch (localAnesthetic) {
-                case 'lidocaine': {
-                    conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${lidocaineDosing(actualWeight)[1]}mg (4mg/kg; max 300mg) without addition of epinephrine and ${lidocaineDosing(actualWeight)[2]}mg (7mg/kg; max 500mg) if epinephrine is added.`);
-                    tableRows = lidocaineDosing(actualWeight)[0];
-                    break;
-                }
-
-                case 'bupivacaine': {
-                    conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${bupivacaineDosing(actualWeight)[1]}mg (2mg/kg; max 175mg) without addition of epinephrine and ${bupivacaineDosing(actualWeight)[2]}mg (3mg/kg; max 225mg) if epinephrine is added.`);
-                    tableRows = bupivacaineDosing(actualWeight)[0];
-                    break;
-                }
-
-                case 'ropivacaine': {
-                    conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${ropivacaineDosing(actualWeight)[1]}mg (3mg/kg; max 225mg)`);
-                    tableRows = ropivacaineDosing(actualWeight)[0];
-                    break;
-                }
-
-                default: {
-                    conv.ask(`Sorry, I don't have information for that drug yet. I'm working hard to keep adding new information to my brain`);
-                }
-            }
-
-            conv.ask(new Table({
-                title: `${localAnesthetic[0].toUpperCase() + localAnesthetic.substring(1)} dosing`,
-                columns: ['formulation', 'max volume'],
-                rows: tableRows,
-                dividers: true
-            }));
-
-            agent.add(conv);
-        }
-
-
-
-  // Run the proper function handler based on the matched Dialogflow intent name
-  const intentMap = new Map();
-  intentMap.set('Centor Criteria - yes', calculateCentorCriteria);
-  intentMap.set('Decision Instrument: HEART Score', calculateHeartScore);
-  intentMap.set('Drug Reference: Local Anesthetic Dose', calculateLocalAnestheticDose);
-  
-  agentBot.handleRequest(intentMap);
+const app = dialogflow({
+    debug: true
 });
+
+app.intent('Default Welcome Intent', (conv => {
+    console.log('Initialize welcome intent')
+    conv.ask('Welcome to AI Consult');
+}));
+
+app.catch((conv, error) => {
+    console.error(error);
+    conv.ask('Sorry I encountered a glitch. Can you try again?')
+});
+
+app.fallback((conv) => {
+    conv.ask(`I couldn't understand. Could you try again?`)
+});
+
+app.intent('Drug Reference: Local Anesthetic Dose', ((conv, params) => {
+    console.log("Intiializing Drug Reference: Local Anesthetic Dose")
+    const unitWeight: any = params.unitWeight;
+    const localAnesthetic: any = params.localAnesthetic;
+    const { amount, unit } = unitWeight;
+    const actualWeight = toKg(unitWeight)
+
+    let tableRows: string[][];
+
+    switch (localAnesthetic) {
+        case 'lidocaine': {
+            conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${lidocaineDosing(actualWeight)[1]}mg (4mg/kg; max 300mg) without addition of epinephrine and ${lidocaineDosing(actualWeight)[2]}mg (7mg/kg; max 500mg) if epinephrine is added.`);
+            tableRows = lidocaineDosing(actualWeight)[0];
+            break;
+        }
+
+        case 'bupivacaine': {
+            conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${bupivacaineDosing(actualWeight)[1]}mg (2mg/kg; max 175mg) without addition of epinephrine and ${bupivacaineDosing(actualWeight)[2]}mg (3mg/kg; max 225mg) if epinephrine is added.`);
+            tableRows = bupivacaineDosing(actualWeight)[0];
+            break;
+        }
+
+        case 'ropivacaine': {
+            conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${ropivacaineDosing(actualWeight)[1]}mg (3mg/kg; max 225mg)`);
+            tableRows = ropivacaineDosing(actualWeight)[0];
+            break;
+        }
+
+        default: {
+            conv.ask(`Sorry, I don't have information for that drug yet. I'm working hard to keep adding new information to my brain`);
+        }
+    }
+
+    conv.ask(new Table({
+        title: `${localAnesthetic[0].toUpperCase() + localAnesthetic.substring(1)} dosing`,
+        columns: ['formulation', 'max volume'],
+        rows: tableRows,
+        dividers: true
+    }));
+
+}));
+
+app.intent('Reference: Intubation', ((conv, params) => {
+    console.log('Initialize Reference: Intubation Intent');
+
+    const unitWeight = params.unitWeight;
+    const age = params.age;
+    const color: any = params.color;
+    const patientType = params.patientType;
+
+    if (unitWeight) {
+        conv.ask('Return dosing based on weight');
+    } else if (age) {
+        console.log(`AGE`, age)
+        conv.ask('Return dosing based on age');
+        conv.ask(`Assumed weight is ${ageToKg(age)} based on a broselow color of ${ageToBroselowColor(age)}`)
+    } else if (color) {
+        console.log(`COLOR`, color)
+        const broselowColors = ['gray', 'pink', 'red', 'purple', 'yellow', 'white', 'blue', 'orange', 'green'];
+        
+        if (broselowColors.indexOf(color) > -1) {
+            conv.ask(`Return dosing based on broselow color of ${color}`);
+        } else {
+            conv.ask(`A valid broselow color was not provided`);
+        }
+
+    } else if (patientType) {
+        conv.ask(`Return dosing based on patient type`);
+    } else {
+        conv.ask('Return dosing based on standard adult size of 70kg');
+    }
+    
+}));
+
+exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);

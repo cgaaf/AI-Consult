@@ -70,4 +70,86 @@ function ropivacaineDosing(weight) {
     return [table, noEpi.toFixed(0)];
 }
 exports.ropivacaineDosing = ropivacaineDosing;
+function ageToBroselowColor(age) {
+    let amount = age.amount;
+    let unit = age.unit;
+    if (unit === 'month') {
+        amount = amount / 12;
+    }
+    let color = null;
+    // Conditional statements for each age range
+    if (amount <= (2 / 12)) {
+        color = 'gray';
+    }
+    else if (amount <= (4 / 12)) {
+        color = 'pink';
+    }
+    else if (amount <= 0.5) {
+        color = 'red';
+    }
+    else if (amount <= 1) {
+        color = 'purple';
+    }
+    else if (amount <= 2) {
+        color = 'yellow';
+    }
+    else if (amount <= 4) {
+        color = 'white';
+    }
+    else if (amount <= 6) {
+        color = 'blue';
+    }
+    else if (amount <= 8) {
+        color = 'orange';
+    }
+    else if (amount <= 10) {
+        color = 'green';
+    }
+    else {
+        color = 'No color for this age group';
+    }
+    return color;
+}
+exports.ageToBroselowColor = ageToBroselowColor;
+function ageToKg(age) {
+    let amount = age.amount;
+    let unit = age.unit;
+    if (unit === 'month') {
+        amount = amount / 12;
+    }
+    let weight;
+    // Conditional statements for each age range
+    if (amount <= (2 / 12)) {
+        weight = 5;
+    }
+    else if (amount <= (4 / 12)) {
+        weight = 6;
+    }
+    else if (amount <= 0.5) {
+        weight = 8;
+    }
+    else if (amount <= 1) {
+        weight = 10;
+    }
+    else if (amount <= 2) {
+        weight = 12;
+    }
+    else if (amount <= 4) {
+        weight = 15;
+    }
+    else if (amount <= 6) {
+        weight = 20;
+    }
+    else if (amount <= 8) {
+        weight = 25;
+    }
+    else if (amount <= 10) {
+        weight = 35;
+    }
+    else {
+        weight = 50;
+    }
+    return weight;
+}
+exports.ageToKg = ageToKg;
 //# sourceMappingURL=helpers.js.map
