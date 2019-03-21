@@ -2,11 +2,13 @@ import * as functions from 'firebase-functions';
 import { dialogflow, Table } from 'actions-on-google';
 import { 
     toKg, 
-    ageToBroselowColor, 
-    ageToKg,
+    ageToBroselowColor,
     lidocaineDosing, 
     bupivacaineDosing,
-    ropivacaineDosing } from './helpers';
+    ropivacaineDosing,
+    buildInductionTable,
+    buildParalyticTable
+ } from './helpers';
 
 const app = dialogflow({
     debug: true
@@ -31,7 +33,7 @@ app.intent('Drug Reference: Local Anesthetic Dose', ((conv, params) => {
     const unitWeight: any = params.unitWeight;
     const localAnesthetic: any = params.localAnesthetic;
     const { amount, unit } = unitWeight;
-    const actualWeight = toKg(unitWeight)
+    const actualWeight = toKg(params)
 
     let tableRows: string[][];
 
@@ -71,23 +73,31 @@ app.intent('Drug Reference: Local Anesthetic Dose', ((conv, params) => {
 app.intent('Reference: Intubation', ((conv, params) => {
     console.log('Initialize Reference: Intubation Intent');
 
-    const unitWeight = params.unitWeight;
-    const age = params.age;
+    const unitWeight: any = params.unitWeight;
+    const age: any = params.age;
     const color: any = params.color;
     const patientType = params.patientType;
+    const weight = toKg(params);
+
+    const table = new Table({
+        title: `RSI medications`,
+        columns: ['Medication', 'Dose', 'Duration of Action'],
+        rows: buildInductionTable(params).concat(buildParalyticTable(params)),
+        dividers: true
+    })
 
     if (unitWeight) {
-        conv.ask('Return dosing based on weight');
+        conv.ask(`Weight based dosing based on input weight of ${weight}kg`);
+        conv.ask(table)
     } else if (age) {
-        console.log(`AGE`, age)
-        conv.ask('Return dosing based on age');
-        conv.ask(`Assumed weight is ${ageToKg(age)} based on a broselow color of ${ageToBroselowColor(age)}`)
+        conv.ask(`Estimated weight of a of ${age.amount} ${age.unit} old is ${weight}kg based on a broselow color of ${ageToBroselowColor(age)}`)
+        conv.ask(table)
     } else if (color) {
-        console.log(`COLOR`, color)
         const broselowColors = ['gray', 'pink', 'red', 'purple', 'yellow', 'white', 'blue', 'orange', 'green'];
-        
+
         if (broselowColors.indexOf(color) > -1) {
-            conv.ask(`Return dosing based on broselow color of ${color}`);
+            conv.ask(`Assumed weight is ${weight}kg based on broselow color of ${color}`);
+            conv.ask(table)
         } else {
             conv.ask(`A valid broselow color was not provided`);
         }
