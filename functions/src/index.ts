@@ -2,13 +2,15 @@ import * as functions from 'firebase-functions';
 import { dialogflow, Table } from 'actions-on-google';
 import { 
     toKg, 
-    ageToBroselowColor,
     lidocaineDosing, 
     bupivacaineDosing,
     ropivacaineDosing,
     buildInductionTable,
-    buildParalyticTable
+    buildParalyticTable,
+    reportPatientType
  } from './helpers';
+
+ import { getChris } from './airtable-helper';
 
 const app = dialogflow({
     debug: true
@@ -16,7 +18,7 @@ const app = dialogflow({
 
 app.intent('Default Welcome Intent', (conv => {
     console.log('Initialize welcome intent')
-    conv.ask('Welcome to AI Consult');
+    conv.ask(`<speak>Hi I'm <sub alias="doctor">Dr.</sub> G!</speak>`);
 }));
 
 app.catch((conv, error) => {
@@ -70,14 +72,16 @@ app.intent('Drug Reference: Local Anesthetic Dose', ((conv, params) => {
 
 }));
 
-app.intent('Reference: Intubation', ((conv, params) => {
+app.intent('REFERENCE_Intubation', ((conv, params) => {
     console.log('Initialize Reference: Intubation Intent');
 
-    const unitWeight: any = params.unitWeight;
-    const age: any = params.age;
-    const color: any = params.color;
-    const patientType = params.patientType;
-    const weight = toKg(params);
+    // const unitWeight: any = params.unitWeight;
+    // const age: any = params.age;
+    // const color: any = params.color;
+    // const patientType = params.patientType;
+    // const weight = toKg(params);
+
+    reportPatientType(conv, params);
 
     const table = new Table({
         title: `RSI medications`,
@@ -86,28 +90,46 @@ app.intent('Reference: Intubation', ((conv, params) => {
         dividers: true
     })
 
-    if (unitWeight) {
-        conv.ask(`Weight based dosing based on input weight of ${weight}kg`);
-        conv.ask(table)
-    } else if (age) {
-        conv.ask(`Estimated weight of a of ${age.amount} ${age.unit} old is ${weight}kg based on a broselow color of ${ageToBroselowColor(age)}`)
-        conv.ask(table)
-    } else if (color) {
-        const broselowColors = ['gray', 'pink', 'red', 'purple', 'yellow', 'white', 'blue', 'orange', 'green'];
+    conv.ask(table)
 
-        if (broselowColors.indexOf(color) > -1) {
-            conv.ask(`Assumed weight is ${weight}kg based on broselow color of ${color}`);
-            conv.ask(table)
-        } else {
-            conv.ask(`A valid broselow color was not provided`);
-        }
+    // if (unitWeight) {
+    //     conv.ask(`Weight based dosing based on input weight of ${weight}kg`);
+    //     conv.ask(table)
+    // } else if (age) {
+    //     conv.ask(`Estimated weight of a of ${age.amount} ${age.unit} old is ${weight}kg based on a broselow color of ${toBroselow(params)}`)
+    //     conv.ask(table)
+    // } else if (color) {
+    //     const broselowColors = ['gray', 'pink', 'red', 'purple', 'yellow', 'white', 'blue', 'orange', 'green'];
 
-    } else if (patientType) {
-        conv.ask(`Return dosing based on patient type`);
-    } else {
-        conv.ask('Return dosing based on standard adult size of 70kg');
-    }
+    //     if (broselowColors.indexOf(color) > -1) {
+    //         conv.ask(`Assumed weight is ${weight}kg based on broselow color of ${color}`);
+    //         conv.ask(table)
+    //     } else {
+    //         conv.ask(`A valid broselow color was not provided`);
+    //     }
+
+    // } else if (patientType) {
+    //     conv.ask(`Return dosing based on patient type`);
+    // } else {
+    //     conv.ask('Return dosing based on standard adult size of 70kg');
+    // }
     
+}));
+
+app.intent('REFERENCE_Intubation - Equipment', ((conv, params) => {
+    conv.ask("Initialize Intubation Equipment");
+}))
+
+app.intent('REFERENCE_VentilatorSettings', ((conv, params) => {
+    console.log('Initialize REFERENCE_VentilatorSettings');
+    const patientSize = conv.contexts.get('patientSize');
+    console.log(patientSize);
+    const contextParameters = patientSize.parameters;
+
+    console.log('Conext Parameters:');
+    console.log(contextParameters);
+
+    conv.ask('Here are starter vent settings');
 }));
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);

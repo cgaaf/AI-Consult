@@ -1,12 +1,10 @@
-import { Table } from "actions-on-google";
-
 export function toKg(params) {
   // Helper functions
 
   // Convert age inputs into estimated weight in (kg).
   function ageToKg(age: any) {
     let amount = age.amount;
-    let unit = age.unit;
+    const unit = age.unit;
 
     if (unit === "month") {
       amount = amount / 12;
@@ -92,7 +90,7 @@ export function toKg(params) {
 
   // Convert input weight to metric (kg)
   function toMetric(unitWeight) {
-    let { unit, amount } = unitWeight;
+    const { unit, amount } = unitWeight;
     if (unit === "kg") {
       return amount;
     } else if (unit === "lb") {
@@ -117,11 +115,11 @@ export function toKg(params) {
 export function toBroselow(params) {
   // Converts input parameters into a broselow color
   // Acceptable inputs include age and weight
-  
+
   function ageToBroselowColor(age) {
     // Convert age to broslow color
     let amount = age.amount;
-    let unit = age.unit;
+    const unit = age.unit;
 
     if (unit === "month") {
       amount = amount / 12;
@@ -161,27 +159,27 @@ export function toBroselow(params) {
     let color: string;
 
     if (weight < 3.5) {
-      color = 'gray';
+      color = "gray";
     } else if (weight < 5) {
-      color = 'gray';
-    } else if (weight < 6) { 
-      color = 'gray';
+      color = "gray";
+    } else if (weight < 6) {
+      color = "gray";
     } else if (weight < 8) {
-      color = 'pink';
+      color = "pink";
     } else if (weight < 10) {
-      color = 'red';
+      color = "red";
     } else if (weight < 12) {
-      color ='purple';
+      color = "purple";
     } else if (weight < 15) {
-      color = 'yellow';
+      color = "yellow";
     } else if (weight < 20) {
-      color = 'white';
+      color = "white";
     } else if (weight < 25) {
-      color = 'blue';
+      color = "blue";
     } else if (weight < 35) {
-      color = 'orange';
+      color = "orange";
     } else if (weight < 50) {
-      color = 'green';
+      color = "green";
     } else {
       color = null;
     }
@@ -198,42 +196,6 @@ export function toBroselow(params) {
   } else {
     return null;
   }
-}
-
-export function ageToBroselowColor(age: any): any {
-  let amount = age.amount;
-  let unit = age.unit;
-
-  if (unit === "month") {
-    amount = amount / 12;
-  }
-
-  let color: string = null;
-
-  // Conditional statements for each age range
-  if (amount <= 2 / 12) {
-    color = "gray";
-  } else if (amount <= 4 / 12) {
-    color = "pink";
-  } else if (amount <= 0.5) {
-    color = "red";
-  } else if (amount <= 1) {
-    color = "purple";
-  } else if (amount <= 2) {
-    color = "yellow";
-  } else if (amount <= 4) {
-    color = "white";
-  } else if (amount <= 6) {
-    color = "blue";
-  } else if (amount <= 8) {
-    color = "orange";
-  } else if (amount <= 10) {
-    color = "green";
-  } else {
-    color = "No color for this age group";
-  }
-
-  return color;
 }
 
 export function weightToAge(weight) {
@@ -329,37 +291,37 @@ export function ropivacaineDosing(weight): any[] {
 }
 
 export function etomidateDosing(weight) {
-  let dose = weight * 0.3;
+  const dose = weight * 0.3;
 
   return dose.toFixed(0);
 }
 
 export function propofolDosing(weight) {
-  let dose = weight * 1;
+  const dose = weight * 1;
 
   return dose;
 }
 
 export function ketamineDosing(weight) {
-  let dose = weight * 2;
+  const dose = weight * 2;
 
   return dose;
 }
 
 export function succinylcholineDosing(weight) {
-  let dose = weight * 1.5;
+  const dose = weight * 1.5;
 
   return dose;
 }
 
 export function rocuroniumDosing(weight) {
-  let dose = weight * 1;
+  const dose = weight * 1;
 
   return dose;
 }
 
 export function vecuroniumDosing(weight) {
-  let dose = weight * 0.1;
+  const dose = weight * 0.1;
 
   return dose;
 }
@@ -389,7 +351,13 @@ export function buildIntubationEquipmentTable(params) {
   let age: number;
 
   if (params.age) {
-    age = params.age;
+    if (params.age.unit === "year") {
+      age = params.age.amount;
+    } else if (params.age.unit === "month") {
+      age = params.age.amount / 12;
+    } else {
+      age = 0;
+    }
   } else {
     const weight = toKg(params);
     age = weightToAge(weight);
@@ -427,5 +395,54 @@ export function buildIntubationEquipmentTable(params) {
 
   tubeDepth = tubeDiameter * 3;
 
-  return { tubeDiameter, tubeDepth, bladeSize };
+  console.log("Testing Equipment Variables");
+  console.log(tubeDepth, tubeDiameter, bladeSize);
+
+  return [
+    ["Tube Diameter", tubeDiameter + "mm", ""],
+    ["Tube Depth", tubeDepth + "cm", ""],
+    ["Blade Size", `Mac or Miller ${bladeSize}`, ""]
+  ];
+}
+
+export function reportPatientType(conv, params) {
+  const unitWeight: any = params.unitWeight;
+  const age: any = params.age;
+  const color: any = params.color;
+  const patientType = params.patientType;
+  const weight = toKg(params);
+
+  if (unitWeight) {
+    conv.ask(`Weight based dosing based on input weight of ${weight}kg`);
+  } else if (age) {
+    conv.ask(
+      `Estimated weight of a of ${age.amount} ${
+        age.unit
+      } old is ${weight}kg based on a broselow color of ${toBroselow(params)}`
+    );
+  } else if (color) {
+    const broselowColors = [
+      "gray",
+      "pink",
+      "red",
+      "purple",
+      "yellow",
+      "white",
+      "blue",
+      "orange",
+      "green"
+    ];
+
+    if (broselowColors.indexOf(color) > -1) {
+      conv.ask(
+        `Assumed weight is ${weight}kg based on broselow color of ${color}`
+      );
+    } else {
+      conv.ask(`A valid broselow color was not provided`);
+    }
+  } else if (patientType) {
+    conv.ask(`Return dosing based on patient type`);
+  } else {
+    conv.ask("Return dosing based on standard adult size of 70kg");
+  }
 }
