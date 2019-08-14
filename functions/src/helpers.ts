@@ -1,3 +1,14 @@
+import {
+  propofolDosing,
+  etomidateDosing,
+  ketamineDosing,
+  succinylcholineDosing,
+  rocuroniumDosing,
+  vecuroniumDosing
+} from "./drug-dosing";
+
+import { Table } from "actions-on-google";
+
 export function toKg(params) {
   // Helper functions
 
@@ -89,8 +100,8 @@ export function toKg(params) {
   }
 
   // Convert input weight to metric (kg)
-  function toMetric(unitWeight) {
-    const { unit, amount } = unitWeight;
+  function toMetric(weight) {
+    const { unit, amount } = weight;
     if (unit === "kg") {
       return amount;
     } else if (unit === "lb") {
@@ -100,8 +111,9 @@ export function toKg(params) {
     }
   }
 
-  if (params.unitWeight) {
-    return toMetric(params.unitWeight).toFixed(0);
+  // Conditional statement to prioritize weight over other measurements.
+  if (params.weight) {
+    return toMetric(params.weight).toFixed(0);
   } else if (params.age) {
     return ageToKg(params.age);
   } else if (params.color) {
@@ -187,7 +199,7 @@ export function toBroselow(params) {
     return color;
   }
 
-  if (params.unitWeight) {
+  if (params.weight) {
     const weight = toKg(params);
     return weightToBroselow(weight);
   } else if (params.age) {
@@ -228,104 +240,6 @@ export function weightToAge(weight) {
   return age;
 }
 
-export function lidocaineDosing(weight): any[] {
-  let noEpi = weight * 4;
-  let addEpi = weight * 7;
-
-  if (noEpi > 300) {
-    noEpi = 300;
-  }
-  if (addEpi > 500) {
-    addEpi = 500;
-  }
-
-  const table = [
-    ["0.5%", (noEpi / 5).toFixed(1) + " mL"],
-    ["1%", (noEpi / 10).toFixed(1) + " mL"],
-    ["1.5%", (noEpi / 15).toFixed(1) + " mL"],
-    ["2%", (noEpi / 20).toFixed(1) + " mL"],
-    ["0.5% + epinephrine", (addEpi / 5).toFixed(1) + " mL"],
-    ["1% + epinephrine", (addEpi / 10).toFixed(1) + " mL"],
-    ["1.5% + epinephrine", (addEpi / 15).toFixed(1) + " mL"],
-    ["2% + epinephrine", (addEpi / 20).toFixed(1) + " mL"]
-  ];
-
-  return [table, noEpi.toFixed(0), addEpi.toFixed(0)];
-}
-
-export function bupivacaineDosing(weight): any[] {
-  let noEpi = weight * 2;
-  let addEpi = weight * 3;
-
-  if (noEpi > 175) {
-    noEpi = 175;
-  }
-  if (addEpi > 225) {
-    addEpi = 225;
-  }
-
-  const table: string[][] = [
-    ["0.25%", (noEpi / 2.5).toFixed(1) + " mL"],
-    ["0.5%", (noEpi / 5).toFixed(1) + " mL"],
-    ["0.25% + epinephrine", (addEpi / 2.5).toFixed(1) + " mL"],
-    ["0.5% + epinephrine", (addEpi / 0.5).toFixed(1) + " mL"]
-  ];
-
-  return [table, noEpi.toFixed(0), addEpi.toFixed(0)];
-}
-
-export function ropivacaineDosing(weight): any[] {
-  let noEpi = weight * 3;
-
-  if (noEpi > 225) {
-    noEpi = 225;
-  }
-
-  const table = [
-    ["0.2%", (noEpi / 2).toFixed(1) + " mL"],
-    ["0.5%", (noEpi / 5).toFixed(1) + " mL"],
-    ["0.75%", (noEpi / 7.5).toFixed(1) + " mL"]
-  ];
-
-  return [table, noEpi.toFixed(0)];
-}
-
-export function etomidateDosing(weight) {
-  const dose = weight * 0.3;
-
-  return dose.toFixed(0);
-}
-
-export function propofolDosing(weight) {
-  const dose = weight * 1;
-
-  return dose;
-}
-
-export function ketamineDosing(weight) {
-  const dose = weight * 2;
-
-  return dose;
-}
-
-export function succinylcholineDosing(weight) {
-  const dose = weight * 1.5;
-
-  return dose;
-}
-
-export function rocuroniumDosing(weight) {
-  const dose = weight * 1;
-
-  return dose;
-}
-
-export function vecuroniumDosing(weight) {
-  const dose = weight * 0.1;
-
-  return dose;
-}
-
 export function buildInductionTable(params) {
   const weight = toKg(params);
 
@@ -346,7 +260,9 @@ export function buildParalyticTable(params) {
   ];
 }
 
-export function buildIntubationEquipmentTable(params) {
+export const buildIntubationEquipmentTable = (conv, params) => {
+  console.log("Initialize REFERENCE_Intubation - Equipment");
+  
   // Check for age parameter, if !exist then convert weight to estimated age
   let age: number;
 
@@ -391,34 +307,43 @@ export function buildIntubationEquipmentTable(params) {
   } else if (age <= 10) {
     tubeDiameter = 5.5;
     bladeSize = 3;
+  } else {
+    tubeDiameter = 7.5;
+    bladeSize = 3;
   }
 
   tubeDepth = tubeDiameter * 3;
 
-  console.log("Testing Equipment Variables");
-  console.log(tubeDepth, tubeDiameter, bladeSize);
-
-  return [
-    ["Tube Diameter", tubeDiameter + "mm", ""],
-    ["Tube Depth", tubeDepth + "cm", ""],
-    ["Blade Size", `Mac or Miller ${bladeSize}`, ""]
-  ];
+  const table = new Table({
+    title: `Intubation Equipment`,
+    columns: ["", ""],
+    rows: [
+      ["Tube Diameter", tubeDiameter + "mm"],
+      ["Tube Depth", tubeDepth + "cm"],
+      ["Blade Size", `Mac or Miller ${bladeSize}`]
+    ],
+    dividers: true
+  })
+  
+  conv.ask("I've calculated ideal intubation equipment");
+  conv.ask(table);
+  
+  conv.contexts.set("patient_size", 3, params);
 }
 
 export function reportPatientType(conv, params) {
-  const unitWeight: any = params.unitWeight;
+  const weight: any = params.weight;
   const age: any = params.age;
   const color: any = params.color;
   const patientType = params.patientType;
-  const weight = toKg(params);
 
-  if (unitWeight) {
-    conv.ask(`Weight based dosing based on input weight of ${weight}kg`);
+  if (weight) {
+    conv.ask(`Weight based dosing based on input weight of ${toKg(params)}kg`);
   } else if (age) {
     conv.ask(
-      `Estimated weight of a of ${age.amount} ${
-        age.unit
-      } old is ${weight}kg based on a broselow color of ${toBroselow(params)}`
+      `Estimated weight of a of ${age.amount} ${age.unit} old is ${toKg(
+        params
+      )}kg based on a broselow color of ${toBroselow(params)}`
     );
   } else if (color) {
     const broselowColors = [
@@ -435,7 +360,9 @@ export function reportPatientType(conv, params) {
 
     if (broselowColors.indexOf(color) > -1) {
       conv.ask(
-        `Assumed weight is ${weight}kg based on broselow color of ${color}`
+        `Assumed weight is ${toKg(
+          params
+        )}kg based on broselow color of ${color}`
       );
     } else {
       conv.ask(`A valid broselow color was not provided`);
