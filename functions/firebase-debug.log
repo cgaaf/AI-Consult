@@ -1,30 +1,17 @@
-[debug] [2018-06-01T01:17:52.929Z] ----------------------------------------------------------------------
-[debug] [2018-06-01T01:17:52.986Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
-[debug] [2018-06-01T01:17:52.986Z] CLI Version:   3.18.5
-[debug] [2018-06-01T01:17:52.986Z] Platform:      darwin
-[debug] [2018-06-01T01:17:52.987Z] Node Version:  v8.9.2
-[debug] [2018-06-01T01:17:52.988Z] Time:          Thu May 31 2018 21:17:52 GMT-0400 (EDT)
-[debug] [2018-06-01T01:17:52.988Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2018-06-01T01:17:53.021Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-06-01T01:17:53.022Z] > authorizing via signed-in user
-[debug] [2018-06-01T01:17:53.024Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
-[debug] [2018-06-01T01:17:53.025Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
- { refresh_token: '1/LrIbsITOWFulbxgR5ikIHsskXcg8Wp-Nwa86dZGXSxc',
-  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
-  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
-  grant_type: 'refresh_token',
-  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
- Thu May 31 2018 21:17:53 GMT-0400 (EDT)
-[debug] [2018-06-01T01:17:53.246Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:17:53.255Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/emergency-department-assistant  
-  
- Thu May 31 2018 21:17:53 GMT-0400 (EDT)
-[debug] [2018-06-01T01:17:53.693Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:17:53.694Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/emergency-department-assistant/tokens  
-  
- Thu May 31 2018 21:17:53 GMT-0400 (EDT)
-[debug] [2018-06-01T01:17:54.176Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:44.555Z] ----------------------------------------------------------------------
+[debug] [2019-10-21T01:24:44.557Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2019-10-21T01:24:44.557Z] CLI Version:   7.6.1
+[debug] [2019-10-21T01:24:44.557Z] Platform:      darwin
+[debug] [2019-10-21T01:24:44.557Z] Node Version:  v8.9.2
+[debug] [2019-10-21T01:24:44.558Z] Time:          Sun Oct 20 2019 21:24:44 GMT-0400 (EDT)
+[debug] [2019-10-21T01:24:44.558Z] ----------------------------------------------------------------------
+[debug] [2019-10-21T01:24:44.558Z] 
+[debug] [2019-10-21T01:24:44.565Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-10-21T01:24:44.565Z] > authorizing via signed-in user
+[debug] [2019-10-21T01:24:44.565Z] [iam] checking project emergency-department-assistant for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2019-10-21T01:24:44.567Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/emergency-department-assistant:testIamPermissions  
+
+[debug] [2019-10-21T01:24:44.806Z] <<< HTTP RESPONSE 200
 [info] 
 [info] === Deploying to 'emergency-department-assistant'...
 [info] 
@@ -32,8 +19,11 @@
 [info] Running command: npm --prefix "$RESOURCE_DIR" run lint
 [info] Running command: npm --prefix "$RESOURCE_DIR" run build
 [info] ✔  functions: Finished running predeploy script.
-[debug] [2018-06-01T01:18:04.513Z] > [functions] package.json contents: {
+[debug] [2019-10-21T01:24:52.930Z] > [functions] package.json contents: {
   "name": "functions",
+  "engines": {
+    "node": "8"
+  },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
@@ -45,113 +35,112 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "dialogflow-fulfillment": "^0.3.0-beta.2",
-    "firebase": "^5.0.4",
-    "firebase-admin": "~5.12.1",
-    "firebase-functions": "^1.0.3"
+    "actions-on-google": "^2.12.0",
+    "dialogflow-fulfillment": "^0.6.1",
+    "firebase": "^7.2.1",
+    "firebase-admin": "^8.6.1",
+    "firebase-functions": "^3.3.0"
   },
   "devDependencies": {
-    "tslint": "^5.8.0",
-    "typescript": "^2.5.3"
+    "@types/node": "^12.11.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4"
   },
   "private": true
 }
 [info] i  functions: ensuring necessary APIs are enabled...
-[debug] [2018-06-01T01:18:04.513Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/emergency-department-assistant?view=CONSUMER_VIEW  
-  
- Thu May 31 2018 21:18:04 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:04.514Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/emergency-department-assistant?view=CONSUMER_VIEW  
-  
- Thu May 31 2018 21:18:04 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:05.307Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:05.384Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:52.932Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/emergency-department-assistant/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2019-10-21T01:24:52.933Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/emergency-department-assistant/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2019-10-21T01:24:53.220Z] <<< HTTP RESPONSE 200
 [info] ✔  functions: all necessary APIs are enabled
-[debug] [2018-06-01T01:18:05.386Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/emergency-department-assistant  
-  
- Thu May 31 2018 21:18:05 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:05.780Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:05.780Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/443999560142:getServerAppConfig  
-  
- Thu May 31 2018 21:18:05 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:06.435Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:55.980Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:55.981Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/emergency-department-assistant/adminSdkConfig  
+ 
+[debug] [2019-10-21T01:24:56.289Z] <<< HTTP RESPONSE 200
 [info] i  functions: preparing functions directory for uploading...
-[debug] [2018-06-01T01:18:06.438Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/emergency-department-assistant/configs  
-  
- Thu May 31 2018 21:18:06 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:06.698Z] <<< HTTP RESPONSE 200
-[info] i  functions: packaged functions (55.5 KB) for uploading
-[debug] [2018-06-01T01:18:07.035Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions:generateUploadUrl  
-  
- Thu May 31 2018 21:18:07 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:07.511Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:07.512Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-dea2c127-686b-4bbf-9382-a0cb59a540b1/86170248-fd40-4656-96a2-44bac06a9c83.zip?GoogleAccessId=443999560142@cloudservices.gserviceaccount.com&Expires=1527817687&Signature=DTSkdtmj%2FFavGId%2BWi1ZCajd7YHlfMIyJJgNas%2BoZMVOsTOmqruD7OWIJjkvsTnBvOIvhnmrzP4boaKnl5xqSiO9ZuMZsxtMsIaDNfcLF8T5%2BwPFA%2BPtHM7kw9Bkv8bwTiMjqHlHUW%2B59gdY9NCftKrT5Hh%2FzAR5fBcSdfwJb%2Bv4v7UE9sKTa2P5fTNdmdRz4qxdR2xdFlvD9AOX9BYgG6cRz1P7kN9LXtMnnu3vYXFXkoWaBdOlN0FKvdEFA9sDoxiXBOa7wCt%2BxYpSv0kx7%2BfNdUJxG12jKeXGls7C6ax03qgJ%2BpepFqzxixgZay8Y1ustzK3g6jE7QPtv52pulg%3D%3D  
- ReadStream {
-  _readableState: 
-   ReadableState {
-     objectMode: false,
-     highWaterMark: 65536,
-     buffer: BufferList { head: [Object], tail: [Object], length: 1 },
-     length: 56827,
-     pipes: null,
-     pipesCount: 0,
-     flowing: null,
-     ended: true,
-     endEmitted: false,
-     reading: false,
-     sync: false,
-     needReadable: false,
-     emittedReadable: true,
-     readableListening: false,
-     resumeScheduled: false,
-     destroyed: false,
-     defaultEncoding: 'utf8',
-     awaitDrain: 0,
-     readingMore: false,
-     decoder: null,
-     encoding: null },
-  readable: true,
-  domain: null,
-  _events: { end: [Function] },
-  _eventsCount: 1,
-  _maxListeners: undefined,
-  path: '/var/folders/8g/5y11sjhs1lq7l9pf0dnm3jv40000gn/T/firebase-functions-11998a3ejATdt6KVi.zip',
-  fd: 19,
-  flags: 'r',
-  mode: 438,
-  start: undefined,
-  end: undefined,
-  autoClose: true,
-  pos: undefined,
-  bytesRead: 56827 } 
- Thu May 31 2018 21:18:07 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:08.255Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:56.294Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/emergency-department-assistant/configs  
+ 
+[debug] [2019-10-21T01:24:56.868Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (64.03 KB) for uploading
+[debug] [2019-10-21T01:24:58.052Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2019-10-21T01:24:58.814Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:24:58.815Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-dea2c127-686b-4bbf-9382-a0cb59a540b1/7e9814a1-362c-4042-b75d-c0266fb38d5b.zip?GoogleAccessId=service-443999560142@gcf-admin-robot.iam.gserviceaccount.com&Expires=1571622898&Signature=ix4%2Fgv1%2B7y2aEqRystKw5XW8bofiHte9AhxxsRHGaBVZMAXEoqsiwA%2FkpLC6ykOCUASgDYmdESjSFoiZWtkkAN9cKikTXZgFUjgxCL%2F5OAnBNoXjmvFfN%2B03FhNFFo3sUpkpuJWUFUfqHl2u0BimCGxtIuf6W26Hj99VxdA0dtH%2FQlMj0V%2B7uLq3544r4LVEl42vBS6u4%2F11ErlMERA%2B6jUd0CUFO0xuwOGGLxegmUCYrKTD4bwRl7hI%2BZpx7in5hbAyJaIT29AqXurxIQ5CfE66zilwnUuWhg%2BU7S2UqtAyQDA6ryaAn%2BjIUg711hI6hlTqos8uOWCrqt7PS6Amug%3D%3D  
+ <request body omitted>
+[debug] [2019-10-21T01:25:03.131Z] <<< HTTP RESPONSE 200
 [info] ✔  functions: functions folder uploaded successfully
-[debug] [2018-06-01T01:18:08.257Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions  
-  
- Thu May 31 2018 21:18:08 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:09.077Z] <<< HTTP RESPONSE 200
-[info] i  functions: updating function dialogflowFirebaseFulfillment...
-[debug] [2018-06-01T01:18:09.079Z] Trigger is:  {"httpsTrigger":{}}
-[debug] [2018-06-01T01:18:09.081Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions/dialogflowFirebaseFulfillment 
-query params: {"updateMask":"sourceUploadUrl,name,labels,httpsTrigger"} 
- { sourceUploadUrl: 'https://storage.googleapis.com/gcf-upload-us-central1-dea2c127-686b-4bbf-9382-a0cb59a540b1/86170248-fd40-4656-96a2-44bac06a9c83.zip?GoogleAccessId=443999560142@cloudservices.gserviceaccount.com&Expires=1527817687&Signature=DTSkdtmj%2FFavGId%2BWi1ZCajd7YHlfMIyJJgNas%2BoZMVOsTOmqruD7OWIJjkvsTnBvOIvhnmrzP4boaKnl5xqSiO9ZuMZsxtMsIaDNfcLF8T5%2BwPFA%2BPtHM7kw9Bkv8bwTiMjqHlHUW%2B59gdY9NCftKrT5Hh%2FzAR5fBcSdfwJb%2Bv4v7UE9sKTa2P5fTNdmdRz4qxdR2xdFlvD9AOX9BYgG6cRz1P7kN9LXtMnnu3vYXFXkoWaBdOlN0FKvdEFA9sDoxiXBOa7wCt%2BxYpSv0kx7%2BfNdUJxG12jKeXGls7C6ax03qgJ%2BpepFqzxixgZay8Y1ustzK3g6jE7QPtv52pulg%3D%3D',
-  name: 'projects/emergency-department-assistant/locations/us-central1/functions/dialogflowFirebaseFulfillment',
-  labels: { 'deployment-tool': 'cli-firebase' },
-  httpsTrigger: {} } 
- Thu May 31 2018 21:18:09 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:09.791Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:09.794Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions  
-  
- Thu May 31 2018 21:18:09 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:10.304Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:10.305Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L19VUTlCUGNsdXFv  
-  
- Thu May 31 2018 21:18:10 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:10.816Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:12.817Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L19VUTlCUGNsdXFv  
-  
- Thu May 31 2018 21:18:12 GMT-0400 (EDT)
-[debug] [2018-06-01T01:18:13.376Z] <<< HTTP RESPONSE 200
-[debug] [2018-06-01T01:18:15.377Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L19VUTlCUGNsdXFv  
-  
- Thu May 31 2018 21:18:15 GMT-0400 (EDT)
+[debug] [2019-10-21T01:25:03.135Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/-/functions  
+ 
+[debug] [2019-10-21T01:25:03.531Z] <<< HTTP RESPONSE 200
+[info] i  functions: creating Node.js 8 function fulfillment(us-central1)...
+[debug] [2019-10-21T01:25:03.534Z] Trigger is:  {"httpsTrigger":{}}
+[info] 
+The following functions are found in your project but do not exist in your local source code:
+	dialogflowFirebaseFulfillment(us-central1)
+
+If you are renaming a function or changing its region, it is recommended that you create the new function first before deleting the old one to prevent event loss. For more info, visit https://firebase.google.com/docs/functions/manage-functions#modify
+
+[info] i  functions: deleting function dialogflowFirebaseFulfillment(us-central1)...
+[debug] [2019-10-21T01:25:07.096Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/emergency-department-assistant/services/cloudscheduler.googleapis.com  
+ 
+[debug] [2019-10-21T01:25:07.326Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:07.328Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions  
+
+[debug] [2019-10-21T01:25:07.329Z] >>> HTTP REQUEST DELETE https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/us-central1/functions/dialogflowFirebaseFulfillment  
+ 
+[debug] [2019-10-21T01:25:07.733Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:07.828Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:07.831Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/emergency-department-assistant/locations/-/functions  
+ 
+[debug] [2019-10-21T01:25:08.337Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:08.339Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:08.340Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L3BwVkp4NWphUy1v  
+ 
+[debug] [2019-10-21T01:25:08.644Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:08.646Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:10.650Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:10.651Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L3BwVkp4NWphUy1v  
+ 
+[debug] [2019-10-21T01:25:11.000Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:11.001Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:13.007Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2RpYWxvZ2Zsb3dGaXJlYmFzZUZ1bGZpbGxtZW50L3BwVkp4NWphUy1v  
+ 
+[debug] [2019-10-21T01:25:13.007Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:13.256Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:13.275Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[dialogflowFirebaseFulfillment(us-central1)]: Successful delete operation. 
+[debug] [2019-10-21T01:25:15.260Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:15.405Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:17.408Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:17.671Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:19.673Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:19.920Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:21.924Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:22.168Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:24.170Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:24.517Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:26.520Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:26.814Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:28.815Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:29.141Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:31.143Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:31.293Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:33.298Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:33.630Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-21T01:25:35.635Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/ZW1lcmdlbmN5LWRlcGFydG1lbnQtYXNzaXN0YW50L3VzLWNlbnRyYWwxL2Z1bGZpbGxtZW50L1NCLWphUUpQMHln  
+ 
+[debug] [2019-10-21T01:25:35.903Z] <<< HTTP RESPONSE 200

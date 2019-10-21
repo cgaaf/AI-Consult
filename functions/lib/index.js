@@ -18,7 +18,7 @@ app.catch((conv, error) => {
 app.fallback(conv => {
     conv.ask(`I couldn't understand. Could you try again?`);
 });
-app.intent("Drug Reference: Local Anesthetic Dose", (conv, params) => {
+app.intent("Drug Reference - Local Anesthetic Dose", (conv, params) => {
     console.log("Intiializing Drug Reference: Local Anesthetic Dose");
     const weight = params.weight;
     const localAnesthetic = params.localAnesthetic;
