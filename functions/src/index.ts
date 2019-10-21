@@ -34,45 +34,45 @@ app.fallback(conv => {
 
 app.intent("Drug Reference - Local Anesthetic Dose", (conv, params) => {
   console.log("Intiializing Drug Reference: Local Anesthetic Dose");
-  const weight: any = params.weight;
+  const weight: any = toKg(params);
   const localAnesthetic: any = params.localAnesthetic;
-  const { amount, unit } = weight;
-  const actualWeight = toKg(params);
 
   let tableRows: string[][];
+
+  conv.ask(reportPatientType(conv, params));
 
   switch (localAnesthetic) {
     case "lidocaine": {
       conv.ask(
-        `Max dose of lidocaine in a ${amount}${unit} patient is ${
-          lidocaineDosing(actualWeight)[1]
+        `Max dose of lidocaine is ${
+          lidocaineDosing(weight)[1]
         }mg (4mg/kg; max 300mg) without addition of epinephrine and ${
-          lidocaineDosing(actualWeight)[2]
+          lidocaineDosing(weight)[2]
         }mg (7mg/kg; max 500mg) if epinephrine is added.`
       );
-      tableRows = lidocaineDosing(actualWeight)[0];
+      tableRows = lidocaineDosing(weight)[0];
       break;
     }
 
     case "bupivacaine": {
       conv.ask(
-        `Max dose of bupivacaine in a ${amount}${unit} patient is ${
-          bupivacaineDosing(actualWeight)[1]
+        `Max dose of bupivacaine is ${
+          bupivacaineDosing(weight)[1]
         }mg (2mg/kg; max 175mg) without addition of epinephrine and ${
-          bupivacaineDosing(actualWeight)[2]
+          bupivacaineDosing(weight)[2]
         }mg (3mg/kg; max 225mg) if epinephrine is added.`
       );
-      tableRows = bupivacaineDosing(actualWeight)[0];
+      tableRows = bupivacaineDosing(weight)[0];
       break;
     }
 
     case "ropivacaine": {
       conv.ask(
-        `Max dose of ropivacaine in a ${amount}${unit} patient is ${
-          ropivacaineDosing(actualWeight)[1]
+        `Max dose of ropivacaine is ${
+          ropivacaineDosing(weight)[1]
         }mg (3mg/kg; max 225mg)`
       );
-      tableRows = ropivacaineDosing(actualWeight)[0];
+      tableRows = ropivacaineDosing(weight)[0];
       break;
     }
 
@@ -99,7 +99,7 @@ app.intent("REFERENCE_Intubation", (conv, params) => {
 
   conv.contexts.set("patient_size", 3, params);
 
-  reportPatientType(conv, params);
+  conv.ask(reportPatientType(conv, params));
 
   const table = new Table({
     title: `RSI medications`,

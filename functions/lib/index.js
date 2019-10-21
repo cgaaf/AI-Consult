@@ -20,25 +20,24 @@ app.fallback(conv => {
 });
 app.intent("Drug Reference - Local Anesthetic Dose", (conv, params) => {
     console.log("Intiializing Drug Reference: Local Anesthetic Dose");
-    const weight = params.weight;
+    const weight = helpers_1.toKg(params);
     const localAnesthetic = params.localAnesthetic;
-    const { amount, unit } = weight;
-    const actualWeight = helpers_1.toKg(params);
     let tableRows;
+    helpers_1.reportPatientType(conv, params);
     switch (localAnesthetic) {
         case "lidocaine": {
-            conv.ask(`Max dose of lidocaine in a ${amount}${unit} patient is ${drug_dosing_1.lidocaineDosing(actualWeight)[1]}mg (4mg/kg; max 300mg) without addition of epinephrine and ${drug_dosing_1.lidocaineDosing(actualWeight)[2]}mg (7mg/kg; max 500mg) if epinephrine is added.`);
-            tableRows = drug_dosing_1.lidocaineDosing(actualWeight)[0];
+            conv.ask(`Max dose of lidocaine is ${drug_dosing_1.lidocaineDosing(weight)[1]}mg (4mg/kg; max 300mg) without addition of epinephrine and ${drug_dosing_1.lidocaineDosing(weight)[2]}mg (7mg/kg; max 500mg) if epinephrine is added.`);
+            tableRows = drug_dosing_1.lidocaineDosing(weight)[0];
             break;
         }
         case "bupivacaine": {
-            conv.ask(`Max dose of bupivacaine in a ${amount}${unit} patient is ${drug_dosing_1.bupivacaineDosing(actualWeight)[1]}mg (2mg/kg; max 175mg) without addition of epinephrine and ${drug_dosing_1.bupivacaineDosing(actualWeight)[2]}mg (3mg/kg; max 225mg) if epinephrine is added.`);
-            tableRows = drug_dosing_1.bupivacaineDosing(actualWeight)[0];
+            conv.ask(`Max dose of bupivacaine is ${drug_dosing_1.bupivacaineDosing(weight)[1]}mg (2mg/kg; max 175mg) without addition of epinephrine and ${drug_dosing_1.bupivacaineDosing(weight)[2]}mg (3mg/kg; max 225mg) if epinephrine is added.`);
+            tableRows = drug_dosing_1.bupivacaineDosing(weight)[0];
             break;
         }
         case "ropivacaine": {
-            conv.ask(`Max dose of ropivacaine in a ${amount}${unit} patient is ${drug_dosing_1.ropivacaineDosing(actualWeight)[1]}mg (3mg/kg; max 225mg)`);
-            tableRows = drug_dosing_1.ropivacaineDosing(actualWeight)[0];
+            conv.ask(`Max dose of ropivacaine is ${drug_dosing_1.ropivacaineDosing(weight)[1]}mg (3mg/kg; max 225mg)`);
+            tableRows = drug_dosing_1.ropivacaineDosing(weight)[0];
             break;
         }
         default: {

@@ -117,7 +117,7 @@ function toKg(params) {
     }
     else {
         console.log("Invalid input into toKg function");
-        return null;
+        return 70;
     }
 }
 exports.toKg = toKg;

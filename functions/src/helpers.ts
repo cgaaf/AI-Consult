@@ -120,7 +120,7 @@ export function toKg(params) {
     return broselowToKg(params.color);
   } else {
     console.log("Invalid input into toKg function");
-    return null;
+    return 70;
   }
 }
 
@@ -338,13 +338,9 @@ export function reportPatientType(conv, params) {
   const patientType = params.patientType;
 
   if (weight) {
-    conv.ask(`Weight based dosing based on input weight of ${toKg(params)}kg`);
+    return `Weight based dosing based on input weight of ${toKg(params)}kg`;
   } else if (age) {
-    conv.ask(
-      `Estimated weight of a of ${age.amount} ${age.unit} old is ${toKg(
-        params
-      )}kg based on a broselow color of ${toBroselow(params)}`
-    );
+    return `Estimated weight of a of ${age.amount} ${age.unit} old is ${toKg(params)}kg based on a broselow color of ${toBroselow(params)}`;
   } else if (color) {
     const broselowColors = [
       "gray",
@@ -359,17 +355,13 @@ export function reportPatientType(conv, params) {
     ];
 
     if (broselowColors.indexOf(color) > -1) {
-      conv.ask(
-        `Assumed weight is ${toKg(
-          params
-        )}kg based on broselow color of ${color}`
-      );
+      return `Assumed weight is ${toKg(params)}kg based on broselow color of ${color}`;
     } else {
-      conv.ask(`A valid broselow color was not provided`);
+      return 'A valid broselow color was not provided';
     }
   } else if (patientType) {
-    conv.ask(`Return dosing based on patient type`);
+    return 'Return dosing based on patient type';
   } else {
-    conv.ask("Return dosing based on standard adult size of 70kg");
+    return "Return dosing based on standard adult size of 70kg";
   }
 }
